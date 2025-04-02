@@ -2,20 +2,121 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+html,
+body {
+  height: 100vh;
 }
 
-@media (prefers-color-scheme: dark) {
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 
+R (0)
+G (110)
+B (255 */
+
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+   /* CSS: .bg-gradient { background: var(--gradient) } */
+   --gradient: #00467F;
+   --background: 220 100% 98.5%;
+   --foreground: 220 10% 1%;
+
+   --muted: 220 10% 92.5%;
+   --muted-foreground: 220 5% 42.5%;
+
+   --popover: 220 10% 92.5%;
+   --popover-foreground: 220 10% 1.25%;
+
+   --card: 220 10% 92.5%;
+   --card-foreground: 220 10% 1.25%;
+
+   --border: 220 15% 90%;
+   --input: 220 15% 90%;
+
+   --primary: 220 100% 25%;
+   --primary-foreground: 220 2% 92.5%;
+
+   --secondary: 220 5% 96.25%;
+   --secondary-foreground: 220 7% 12.5%;
+
+   --accent: 220 5% 96.25%;
+   --accent-foreground: 220 7% 12.5%;
+
+   --destructive: 0 84.2% 60.2%;
+   --destructive-foreground: 0 0% 98%;
+
+   --ring: 220 100% 25%;
+
+   --radius: 0.5rem;
+
+  }
+
+  .dark {
+    /* Name: custom color palette
+       Author: Ilias Ism
+       URL: https://gradient.page */
+
+    /* CSS: .bg-gradient { background: var(--gradient) } */
+    --gradient: #136a8a;
+
+    --background: 208 49.4% 2.48%;
+    --foreground: 208 7.6% 96.55%;
+
+    --muted: 208 38% 9.3%;
+    --muted-foreground: 208 7.6% 53.1%;
+
+    --popover: 208 49.8% 4.03%;
+    --popover-foreground: 208 7.6% 96.55%;
+
+    --card: 208 49.8% 4.03%;
+    --card-foreground: 208 7.6% 96.55%;
+
+    --border: 208 38% 9.3%;
+    --input: 208 38% 9.3%;
+
+    --primary: 208 76% 31%;
+    --primary-foreground: 208 7.6% 96.55%;
+
+    --secondary: 208 38% 9.3%;
+    --secondary-foreground: 208 7.6% 96.55%;
+
+    --accent: 208 38% 9.3%;
+    --accent-foreground: 208 7.6% 96.55%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 208 7.6% 96.55%;
+
+    --ring: 208 76% 31%;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.dotPattern {
+  background-image: radial-gradient(rgb(35, 40, 68) 1px, transparent 1px);
+  background-size: 25px 25px;
+}
+
+.use-automation-zoom-in {
+  animation: automation-zoom-in 0.5s;
+}
+
+@keyframes automation-zoom-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
