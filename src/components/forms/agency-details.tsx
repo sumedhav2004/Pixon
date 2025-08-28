@@ -9,12 +9,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { useForm } from 'react-hook-form'
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Form,FormControl,FormField, FormItem, FormLabel } from '../ui/form'
+import { Form,FormControl,FormDescription,FormField, FormItem, FormLabel } from '../ui/form'
 import FileUpload from '../global/file-upload'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { deleteAgency, initUser, upsertAgency } from '@/lib/queries'
 import { v4 } from 'uuid';
+import { Switch } from '../ui/switch'
 
 
 type Props = {
@@ -37,34 +38,50 @@ const FormSchema = z.object({
 const AgencyDetails = ({data}: Props) => {
   const router = useRouter()
   const [deletingAgency,setDeletingAgency] = useState(false)
+
   const form = useForm<z.infer<typeof FormSchema>>({
     mode:"onChange",
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      name: data?.name,
-      companyEmail: data?.companyEmail,
-      companyPhone: data?.companyPhone,
+      name: data?.name ?? '',
+      companyEmail: data?.companyEmail ?? '',
+      companyPhone: data?.companyPhone ?? '',
       whiteLabel:data?.whiteLabel || false,
-      address: data?.address,
-      city: data?.city,
-      zipCode: data?.zipCode,
-      state: data?.state,
-      country: data?.country,
-      agencyLogo: data?.agencyLogo,
+      address: data?.address ?? '',
+      city: data?.city ?? '',
+      zipCode: data?.zipCode ?? '',
+      state: data?.state ?? '',
+      country: data?.country ?? '',
+      agencyLogo: data?.agencyLogo ?? '',
     }
   })
   const isloading = form.formState.isSubmitting;
 
   useEffect(() =>{
     if(data){
-      form.reset(data);
+      form.reset(
+        {
+          name: data?.name ?? '',
+          companyEmail: data?.companyEmail ?? '',
+          companyPhone: data?.companyPhone ?? '',
+          whiteLabel:data?.whiteLabel || false,
+          address: data?.address ?? '',
+          city: data?.city ?? '',
+          zipCode: data?.zipCode ?? '',
+          state: data?.state ?? '',
+          country: data?.country ?? '',
+          agencyLogo: data?.agencyLogo ?? '',
+        }
+      );
     }
   },[data])
 
   const handleSubmit = async (values:z.infer<typeof FormSchema>) =>{
+    console.log("Form Submitted!", values);
     try{
+      console.log("Calling initUser...");
       let newUserData;
-      let customerId;
+      let custId;
 
       if(!data?.id){
         const bodyData = {
@@ -88,13 +105,30 @@ const AgencyDetails = ({data}: Props) => {
             state: values.zipCode,
           } ,
         }
+
+        const customerResponse = await fetch('/api/stripe/create-customer', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(bodyData),
+        })
+        const customerData: { customerId: string } = await customerResponse.json()
+        custId = customerData.customerId
       }
+
+
       //CustId
       newUserData = await initUser({
         role: 'AGENCY_OWNER'
       })
-      if(!data?.id){
-        await upsertAgency({
+
+      console.log("initUser response:", newUserData);
+
+      
+      if(!data?.customerId && !custId) return
+
+      const response = await upsertAgency({
 					id: data?.id ? data.id : v4(),
 					address: values.address,
 					agencyLogo: values.agencyLogo,
@@ -110,10 +144,16 @@ const AgencyDetails = ({data}: Props) => {
 					companyEmail: values.companyEmail,
 					connectAccountId: "",
 					goal: 5,
-				},{Plan});
+          customerId: data?.customerId || custId || '',
+				});
+
         toast("Created Agency")
-        return router.refresh()
-      }
+
+        if(data?.id) return router.refresh()
+        if(response){
+          return router.refresh()
+        }
+      
     }catch(error){
       console.log(error);
       toast("Could not create your agency")
@@ -143,11 +183,11 @@ const AgencyDetails = ({data}: Props) => {
 
   return (
     <AlertDialog>
-      <Card className='border-none'>
+      <Card className='border-none w-full'>
         <CardHeader>
           <CardTitle>Agency Information</CardTitle>
           <CardDescription>
-            vhuihuwh hbciuhe8 biuccyeyrh khbiurhe hbigiueh bvcige
+            Lets create an agency for your business. You can edit the settings later from the agency settings tab.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -206,9 +246,22 @@ const AgencyDetails = ({data}: Props) => {
                       </FormItem>
                     )} 
                   />
+                  
 
                   {/* Agency Address */}
                   <FormField disabled={isloading}
+                    name="country"
+                    render={({field})=>(
+                      <FormItem className='flex-1'>
+                        <FormLabel>Country</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter Agency's country" {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )} 
+                  />
+                </div>
+                <FormField disabled={isloading}
                     name="address"
                     render={({field})=>(
                       <FormItem className='flex-1'>
@@ -219,7 +272,28 @@ const AgencyDetails = ({data}: Props) => {
                       </FormItem>
                     )} 
                   />
-                </div>
+
+                  <FormField disabled={isloading}
+                    control = {form.control}
+                    name="whiteLabel"
+                    render={({field})=>(
+                      <FormItem className='flex flex-row items-center justify-between rounded-lg border gap-4 p-4'>
+                        <div>
+                          <FormLabel>WhiteLabel Agency</FormLabel>
+                          <FormDescription>
+                            Turning on whitelabel mode will show your agency logo to all sub accounts by default. You can overwrite this functionality through sub account settings.
+                          </FormDescription>
+                        </div>
+
+                        <FormControl>
+                          <Switch
+                            checked = {field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )} 
+                  />
 
                 <div className='flex md:flex-row gap-4'>
                   {/* City */}
