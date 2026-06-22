@@ -12,11 +12,8 @@ type Props = {
 }
 
 const FunnelEditorSidebar = ({subaccountId}: Props) => {
-  console.log('FunnelEditorSidebar rendering');
   const {state, dispatch} = useEditor()
   
-  console.log('Preview mode:', state.editor.previewMode)
-  console.log('Selected element:', state.editor.selectedElement)
   
   if (state.editor.previewMode) return null
   

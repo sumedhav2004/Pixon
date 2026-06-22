@@ -10,16 +10,16 @@ import { Spotlight } from "@/components/ui/Spotlight";
 export default function Home() {
   return (
       <>
-        <section className="min-h-screen w-full pt-20 flex items-center justify-center flex-col text-center max-w-screen">
+        <section className="min-h-screen w-full pt-72 flex items-center justify-center flex-col text-center max-w-screen">
           <Spotlight />
 
 
           <p className="text-center">Empowering Agencies, Elevating Brands.</p>
           <div className="bg-gradient-to-r from-primary to-secondary-foreground text-transparent bg-clip-text relative">
-            <h1 className="text-9xl font-bold text-center md:text-[300px]">Pixon</h1>
+            <h1 className="text-9xl font-bold text-center md:text-[300px]">Orbit</h1>
           </div>
 
-          <div className="flex justify-center items-center relative md:mt-[-70px]">
+          <div className="flex justify-center items-center relative md:mt-[-40px]">
             <Image src={'/assets/preview.png'} alt="banner image" height={400} width={800} className="rounded-tl-2xl rounded-tr-2xl border-2 border-muted" />
 
             <div className="bottom-0 top-[50%] bg-gradient-to-t dark:from-background left-0 right-0 absolute z-10"></div>

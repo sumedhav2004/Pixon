@@ -187,7 +187,6 @@ const Container = ({element}: Props) => {
     })
   }
 
-  console.log("THE ELEMENT IS: ",state.editor.selectedElement.name)
 
   return (
     <div style={styles} className={

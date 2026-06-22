@@ -25,6 +25,18 @@ const Checkout = (props: Props) => {
   const styles = props.element.styles
 
   useEffect(() => {
+    console.log('🔍 Checkout Debug State:', {
+      subaccountId: !!subaccountId,
+      funnelId: !!funnelId,
+      livePricesLength: livePrices.length,
+      livePrices: livePrices,
+      subAccountConnectAccId: !!subAccountConnectAccId,
+      clientSecret: !!clientSecret,
+      clientSecretPreview: clientSecret ? clientSecret.substring(0, 15) + '...' : 'null'
+    })
+  }, [subaccountId, funnelId, livePrices, subAccountConnectAccId, clientSecret])
+
+  useEffect(() => {
     if(!subaccountId) return
     const fetchData = async () => {
       const subaccountDetails = await getSubaccountDetails(subaccountId)

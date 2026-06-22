@@ -21,7 +21,7 @@ export async function POST(req: Request) {
   if (
     !process.env.NEXT_PUBLIC_PLATFORM_SUBSCRIPTION_PERCENT ||
     !process.env.NEXT_PUBLIC_PLATFORM_ONETIME_FEE ||
-    !process.env.NEXT_PUBLIC_PLATFORM_AGENY_PERCENT
+    !process.env.NEXT_PUBLIC_PLATFORM_AGENCY_PERCENT
   ) {
     console.log('VALUES DONT EXITS')
     return NextResponse.json({ error: 'Fees do not exist' })
